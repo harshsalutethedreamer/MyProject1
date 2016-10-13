@@ -35,16 +35,16 @@
     <item>Edit Category</item>
     <item>Delete Category</item>
     <item>Go To Gallery</item>
-        <item>Create Video</item>
-        <item>Share Video</item>
+        <!--<item>Create Video</item>-->
+        <!--<item>Share Video</item>-->
 </string-array>
 
     <string-array name="category_flags">
         <item>@drawable/ic_mode_edit_white_48dp</item>
         <item>@drawable/ic_delete_white_48dp</item>
         <item>@drawable/ic_play_circle_outline_white_24dp</item>
-        <item>@drawable/ic_play_circle_outline_white_24dp</item>
-        <item>@drawable/ic_play_circle_outline_white_24dp</item>
+        <!--<item>@drawable/ic_play_circle_outline_white_24dp</item>-->
+        <!--<item>@drawable/ic_play_circle_outline_white_24dp</item>-->
         </string-array>
 
     <string-array name="photo_type">

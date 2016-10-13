@@ -8,14 +8,17 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by harshgupta on 17/09/16.
  */
-public class AddActivity extends FragmentActivity {
+public class AddActivity extends AppCompatActivity {
 
     private final String LOG_TAG=AddActivity.class.getSimpleName();
     private TextView mNameTextView, mEmailTextView, mPhoneTextView;
@@ -42,6 +45,12 @@ public class AddActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_edit);
 
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
+        actionBar.setDisplayShowTitleEnabled(false);
+
         ImageButton dateselection = (ImageButton) findViewById(R.id.imageButton1);
         dateselection.setOnClickListener(
                 new View.OnClickListener() {
@@ -54,6 +63,18 @@ public class AddActivity extends FragmentActivity {
                     }
                 }
         );
+
+        ImageView backbutton=(ImageView) findViewById(R.id.action_homereturnbutton);
+        backbutton.setVisibility(View.VISIBLE);
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
+        final ImageView imageView=(ImageView)findViewById(R.id.action_settings);
+        imageView.setVisibility(View.INVISIBLE);
 
 
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -99,8 +120,8 @@ public class AddActivity extends FragmentActivity {
             }
         });
 
-        RelativeLayout relativeLayout=(RelativeLayout)findViewById(R.id.relativeLayout);
-        relativeLayout.setOnClickListener(new View.OnClickListener() {
+        LinearLayout linearLayout=(LinearLayout) findViewById(R.id.mainLayout);
+        linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);

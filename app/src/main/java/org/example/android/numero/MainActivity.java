@@ -64,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         actionBar.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
         actionBar.setDisplayShowTitleEnabled(false);
 
+        ImageView toolbarsetting=(ImageView)findViewById(R.id.action_settings);
+        toolbarsetting.setVisibility(View.INVISIBLE);
+
         LinearLayout startlinearLayout=(LinearLayout)findViewById(R.id.linearstart);
         startlinearLayout.setOnClickListener(this);
 

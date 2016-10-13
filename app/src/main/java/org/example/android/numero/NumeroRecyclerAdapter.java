@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -77,6 +78,7 @@ public class NumeroRecyclerAdapter extends RecyclerView.Adapter<NumeroRecyclerVi
 //        holder.ncategorybox.OnLongClickListener
 
         final ImageView sta=holder.star;
+        final TextView textView=holder.ncount;
 
         holder.choice.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +149,39 @@ public class NumeroRecyclerAdapter extends RecyclerView.Adapter<NumeroRecyclerVi
                     }
             }
             });
+
+        holder.plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int _id = mnumeros.get(position).getId();
+                int mcountfind;
+                mcountfind= Integer.valueOf(textView.getText().toString());
+                Log.d("IDFIND",String.valueOf(_id));
+                ContentValues values = new ContentValues();
+                values.put(NumeroContract.NumeroColumns.NUMERO_COUNT, mcountfind+1);
+                textView.setText(String.valueOf(mcountfind+1));
+                Uri uri = NumeroContract.Numeros.buildFriendUri(String.valueOf(_id));
+                int recordsUpdated = mContentResolver.update(uri, values, null, null);
+                ((MainActivity) ncontext).setAdapter(0);
+            }
+        });
+
+        holder.minus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int _id = mnumeros.get(position).getId();
+                int mcountfind;
+                mcountfind= Integer.valueOf(textView.getText().toString());
+                if(_id!=0 && mcountfind>0) {
+                    ContentValues values = new ContentValues();
+                    values.put(NumeroContract.NumeroColumns.NUMERO_COUNT, mcountfind - 1);
+                    textView.setText(String.valueOf(mcountfind - 1));
+                    Uri uri = NumeroContract.Numeros.buildFriendUri(String.valueOf(_id));
+                    int recordsUpdated = mContentResolver.update(uri, values, null, null);
+                    ((MainActivity) ncontext).setAdapter(0);
+                }
+            }
+        });
 
 
 

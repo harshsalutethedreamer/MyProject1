@@ -60,4 +60,5 @@
 
     <color name="colorprimary">#000000</color>
     <color name="maintheme">#FFD500</color>
+    <color name="maintheme_100">#FF8F00</color>
 </resources>

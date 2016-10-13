@@ -11,7 +11,7 @@ import android.widget.TextView;
  */
 public class NumeroRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener{
     protected TextView nname,ncount,ndescription,ndate,nname2;
-    protected ImageView photogallery,star,choice;
+    protected ImageView photogallery,star,choice,plus,minus;
     protected LinearLayout ncategorybox;
     private ClickListener clickListener;
 
@@ -30,6 +30,8 @@ public class NumeroRecyclerViewHolder extends RecyclerView.ViewHolder implements
         this.photogallery = (ImageView) view.findViewById(R.id.play_button);
         this.ncategorybox = (LinearLayout) view.findViewById(R.id.categorybox);
         this.choice = (ImageView) view.findViewById(R.id.more_options);
+        this.plus=(ImageView) view.findViewById(R.id.plus_button_add);
+        this.minus=(ImageView) view.findViewById(R.id.minus_button);
         view.setOnClickListener(this);
         view.setOnLongClickListener(this);
     }

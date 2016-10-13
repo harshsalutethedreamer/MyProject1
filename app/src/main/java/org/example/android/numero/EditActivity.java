@@ -17,7 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -143,8 +143,8 @@ public class EditActivity extends FragmentActivity {
             }
         });
 
-        RelativeLayout relativeLayout=(RelativeLayout)findViewById(R.id.relativeLayout);
-        relativeLayout.setOnClickListener(new View.OnClickListener() {
+        LinearLayout linearLayout=(LinearLayout) findViewById(R.id.mainLayout);
+        linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
