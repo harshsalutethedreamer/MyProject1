@@ -3,9 +3,9 @@ package org.example.android.numero;
 
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -31,8 +30,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private List<InformationActivity> mnumeros;
     private static int LOADER_ID=1;
     private static int LOADER_IDA = 2;
-    SharedPreferences pref;
-    private String username,matchText="",nickname;
+    private String matchText="";
     private EditText mSearchEditText;
     private ImageView nimageview_delete,nimageview_editcategory;
     private String mdelete_name;
@@ -75,43 +73,12 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        pref = getActivity().getSharedPreferences("BasicUserDetail", getActivity().MODE_PRIVATE);
-        nickname= pref.getString("nickname", "");
-        username= pref.getString("username", "");
-        if(nickname != null && nickname != ""){
-            TextView tusername = (TextView)rootView.findViewById(R.id.nickname);
-            tusername.setText(nickname);
-        }
-
-
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-        ImageView addcategory = (ImageView) rootView.findViewById(R.id.addcategory);
-        addcategory.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity(),AddActivity.class);
                 startActivity(i);
-            }
-        });
-
-        ImageView setting = (ImageView) rootView.findViewById(R.id.setting);
-        setting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(),SettingActivity.class);
-                startActivity(i);
-                getActivity().finish();
             }
         });
 

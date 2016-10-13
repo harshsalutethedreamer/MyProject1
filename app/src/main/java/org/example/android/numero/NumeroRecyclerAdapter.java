@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import java.util.List;
@@ -53,10 +54,10 @@ public class NumeroRecyclerAdapter extends RecyclerView.Adapter<NumeroRecyclerVi
         holder.ncount.setText(String.valueOf(mnumeros.get(position).getTotalcount()));
         holder.ncategorybox.setTag(String.valueOf(mnumeros.get(position).getId()));
         if(mnumeros.get(position).getNspecial()>0){
-            holder.star.setImageResource(R.drawable.favorites);
+            holder.star.setImageResource(R.drawable.ic_star_border_black_24dp);
             holder.star.setTag("famous");
         }else{
-            holder.star.setImageResource(R.drawable.favorites2);
+            holder.star.setImageResource(R.drawable.ic_star_black_24dp);
             holder.star.setTag("notfamous");
         }
 
@@ -106,7 +107,7 @@ public class NumeroRecyclerAdapter extends RecyclerView.Adapter<NumeroRecyclerVi
                         values.put(NumeroContract.NumeroColumns.NUMERO_UPDATEDDATE, ncreatedtime);
                         Uri uri = NumeroContract.Numeros.buildFriendUri(String.valueOf(_id));
                         int recordsUpdated = mContentResolver.update(uri, values,null,null);
-                        sta.setImageResource(R.drawable.favorites2);
+                        sta.setImageResource(R.drawable.ic_star_border_black_24dp);
                         sta.setTag("notfamous");
                         mainActivity.setAdapter(0);
                     }else if(fam=="notfamous"){
@@ -138,7 +139,7 @@ public class NumeroRecyclerAdapter extends RecyclerView.Adapter<NumeroRecyclerVi
                         values.put(NumeroContract.NumeroColumns.NUMERO_SPECIAL, 1);
                         Uri uri = NumeroContract.Numeros.buildFriendUri(String.valueOf(_id));
                         int recordsUpdated = mContentResolver.update(uri, values,null,null);
-                        sta.setImageResource(R.drawable.favorites);
+                        sta.setImageResource(R.drawable.ic_star_black_24dp);
                         sta.setTag("famous");
                         mainActivity.setAdapter(0);
                     }else{
@@ -155,7 +156,8 @@ public class NumeroRecyclerAdapter extends RecyclerView.Adapter<NumeroRecyclerVi
                 if(isLongCLick){
 
                 }else{
-
+                    InputMethodManager imm = (InputMethodManager)ncontext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 }
             }
         });

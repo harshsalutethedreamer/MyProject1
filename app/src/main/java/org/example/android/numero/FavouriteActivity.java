@@ -1,11 +1,15 @@
 package org.example.android.numero;
 
 import android.content.ContentResolver;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -14,7 +18,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.concurrent.TimeUnit;
 
 public class FavouriteActivity extends Fragment{
 
@@ -24,8 +31,6 @@ public class FavouriteActivity extends Fragment{
     private PagerAdapter mPagerAdapter;
     private Cursor mCursor;
     private ContentResolver mContentResolver;
-    SharedPreferences pref;
-    private String username,nickname;
     private int in=0;
 
     @Override
@@ -38,14 +43,13 @@ public class FavouriteActivity extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.activity_screen_slide, container, false);
-
-        pref = getActivity().getSharedPreferences("BasicUserDetail", getActivity().MODE_PRIVATE);
-        nickname= pref.getString("nickname", "");
-        if(nickname != null && nickname != ""){
-            TextView tusername = (TextView)rootView.findViewById(R.id.nickname);
-            tusername.setText(nickname);
-        }
-
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takeScreenshot();
+            }
+        });
         return rootView;
     }
 
@@ -107,6 +111,48 @@ public class FavouriteActivity extends Fragment{
             }
             return NUM_PAGES;
         }
+    }
+
+    public void takeScreenshot() {
+        long ncreatedtime= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+
+        try {
+            File folder = new File(Environment.getExternalStorageDirectory() + "/numeros");
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+            // image naming and path  to include sd card  appending name you choose for file
+            String mPath = folder + "/" + ncreatedtime + ".jpg";
+
+            // create bitmap screen capture
+            View v1 = getActivity().getWindow().getDecorView().getRootView();
+            v1.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+            v1.setDrawingCacheEnabled(false);
+
+            File imageFile = new File(mPath);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+            openScreenshot(imageFile);
+
+        } catch (Throwable e) {
+            // Several error may come out with file handling or OOM
+            e.printStackTrace();
+        }
+    }
+    private void openScreenshot(File imageFile) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        Uri uri = Uri.fromFile(imageFile);
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+
+        intent.setDataAndType(uri, "image/*");
+        intent.setType("image/jpeg");
+        startActivity(intent);
     }
 
 }

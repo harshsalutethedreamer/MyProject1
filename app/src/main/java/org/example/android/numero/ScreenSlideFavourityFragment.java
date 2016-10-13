@@ -75,17 +75,6 @@ public class ScreenSlideFavourityFragment extends Fragment {
 
         mContentResolver = getActivity().getContentResolver();
 
-        dotsLayout = (LinearLayout) rootView.findViewById(R.id.layoutDots);
-        addBottomDots(mposition,mtotal);
-
-        iv = (ImageView)rootView.findViewById(R.id.share);
-        iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                takeScreenshot();
-            }
-        });
-
         imageadd = (ImageView) rootView.findViewById(R.id.imageadd);
         imageadd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,21 +92,11 @@ public class ScreenSlideFavourityFragment extends Fragment {
             }
         });
 
-        pref = getActivity().getSharedPreferences("BasicUserDetail", getActivity().MODE_PRIVATE);
-        String username= pref.getString("username", "");
-        if(username != null && username != ""){
-            TextView tusername = (TextView)rootView.findViewById(R.id.username);
-            tusername.setText("PUBLISHED BY "+username.toUpperCase());
-        }
-
-
         TextView textView = (TextView) rootView.findViewById(R.id.n_name);
 
         final TextView textView1 = (TextView) rootView.findViewById(R.id.n_number);
 
         TextView textView2 = (TextView) rootView.findViewById(R.id.n_description);
-
-        TextView textView3 = (TextView) rootView.findViewById(R.id.n_date);
 
         ImageView addCount = (ImageView) rootView.findViewById(R.id.addCount);
         ImageView subtractCount = (ImageView) rootView.findViewById(R.id.subtractCount);
@@ -143,13 +122,9 @@ public class ScreenSlideFavourityFragment extends Fragment {
                 textView.setTag(id);
                 _id=id;
 
-                String ndate = mCursor.getString(
-                        mCursor.getColumnIndex(NumeroContract.NumeroColumns.NUMERO_DATE));
-                textView3.setText(ndate);
-
                 String description = mCursor.getString(
                         mCursor.getColumnIndex(NumeroContract.NumeroColumns.NUMERO_DESCRIPTION));
-                textView2.setText(description);
+                textView2.setText(description.toUpperCase());
 
             }
             mCursor.close();
@@ -191,20 +166,6 @@ public class ScreenSlideFavourityFragment extends Fragment {
 
 
         return rootView;
-    }
-
-    private void addBottomDots(int currentPage,int acount) {
-        dots = new ImageView[acount];
-
-        dotsLayout.removeAllViews();
-        for (int i = 0; i < dots.length; i++) {
-            dots[i] = new ImageView(getContext());
-            dots[i].setImageResource(R.drawable.dot_inactive);
-            dotsLayout.addView(dots[i]);
-        }
-
-        if (dots.length > 0)
-            dots[currentPage].setImageResource(R.drawable.dot_active);
     }
 
     @Override
@@ -394,46 +355,6 @@ public class ScreenSlideFavourityFragment extends Fragment {
         }
     }
 
-    public void takeScreenshot() {
-        long ncreatedtime= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 
-        try {
-            File folder = new File(Environment.getExternalStorageDirectory() + "/numeros");
-            if (!folder.exists()) {
-                folder.mkdir();
-            }
-            // image naming and path  to include sd card  appending name you choose for file
-            String mPath = folder + "/" + ncreatedtime + ".jpg";
-
-            // create bitmap screen capture
-            View v1 = getActivity().getWindow().getDecorView().getRootView();
-            v1.setDrawingCacheEnabled(true);
-            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
-            v1.setDrawingCacheEnabled(false);
-
-            File imageFile = new File(mPath);
-
-            FileOutputStream outputStream = new FileOutputStream(imageFile);
-            int quality = 100;
-            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
-            outputStream.flush();
-            outputStream.close();
-            openScreenshot(imageFile);
-
-        } catch (Throwable e) {
-            // Several error may come out with file handling or OOM
-            e.printStackTrace();
-        }
-    }
-    private void openScreenshot(File imageFile) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        Uri uri = Uri.fromFile(imageFile);
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
-
-        intent.setDataAndType(uri, "image/*");
-        intent.setType("image/jpeg");
-        startActivity(intent);
-    }
 
 }

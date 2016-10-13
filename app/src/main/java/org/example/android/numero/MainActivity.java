@@ -4,6 +4,7 @@ package org.example.android.numero;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,12 +21,19 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.jcodec.common.model.ColorSpace;
@@ -34,21 +42,54 @@ import org.jcodec.common.model.Picture;
 import java.io.File;
 import java.io.IOException;
 
-public class MainActivity extends FragmentActivity{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
         private ViewPager mViewPager;
         private PagerAdapter mPager;
         Bitmap bitmap1;
         private AsyncTask task;
+    private String username,nickname;
+    SharedPreferences pref;
+    private Activity activity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        activity=MainActivity.this;
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
+        actionBar.setDisplayShowTitleEnabled(false);
+
+        LinearLayout startlinearLayout=(LinearLayout)findViewById(R.id.linearstart);
+        startlinearLayout.setOnClickListener(this);
+
+        pref = getSharedPreferences("BasicUserDetail", MODE_PRIVATE);
+        nickname= pref.getString("nickname", "");
+        username= pref.getString("username", "");
+        if(nickname != null && nickname != ""){
+            TextView tusername = (TextView)findViewById(R.id.nickname);
+            tusername.setText(nickname.toUpperCase());
+        }
+
         mViewPager=(ViewPager)findViewById(R.id.pager);
         mPager=new SliderAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mPager);
         mViewPager.setCurrentItem(1);
+
+        final ImageView imageView=(ImageView)findViewById(R.id.action_settings);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this,SettingActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
+
     }
 
     public class SliderAdapter extends FragmentStatePagerAdapter{
@@ -123,7 +164,7 @@ public class MainActivity extends FragmentActivity{
                 File folder = new File(Environment.getExternalStorageDirectory() + "/numeros/" + category_name);
                 if (folder.exists()) {
                     video(category_name);
-                  // task=new MainActivityAsyncTask(MainActivity.this,category_name).execute();
+                  task=new MainActivityAsyncTask(MainActivity.this,category_name).execute();
 //                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/numero" + category_name + ".mp4"));
 //                    intent.setDataAndType(Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/numero" + category_name + ".mp4"), "video/mp4");
 //                    startActivity(intent);
@@ -137,7 +178,6 @@ public class MainActivity extends FragmentActivity{
                     this.video(category_name);
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_SEND);
-                    //Harsh bhaiya change the directory name in the Uri.parse() Function in the below 1 lines
                     Uri uri = Uri.fromFile(GetSDPathToFile("",category_name + ".mp4"));
                     intent.putExtra(Intent.EXTRA_STREAM, uri);
                     intent.setDataAndType(uri, "video/*");
@@ -156,28 +196,56 @@ public class MainActivity extends FragmentActivity{
             NewSequenceEncoder encoder = new NewSequenceEncoder(file);
             File folder = new File(Environment.getExternalStorageDirectory() + "/numeros/" + category_name);
             File[] listFile = folder.listFiles();
+            String text="NUMERO";
             // only 5 frames in total
             Log.d("problem1",String.valueOf(listFile.length));
             for (int i = 1; i <= listFile.length; i++) {
                 String FilePathStrings=listFile[i-1].getAbsolutePath();
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                bmOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
                 Bitmap bitmapa = BitmapFactory.decodeFile(FilePathStrings,bmOptions);
+                Bitmap mutableBitmap = bitmapa.copy(Bitmap.Config.ARGB_8888, true);
+                Typeface tf = Typeface.create("google lato", Typeface.BOLD);
+
+                Paint paint = new Paint();
+                paint.setStyle(Paint.Style.FILL);
+                paint.setColor(Color.BLUE);
+                paint.setTypeface(tf);
+                paint.setTextAlign(Paint.Align.CENTER);
+                paint.setTextSize(convertToPixels(getApplicationContext(),6));
+
+                Rect textRect = new Rect();
+                paint.getTextBounds(text, 0, text.length(), textRect);
+                //            Log.d("dee","reached here2");
+                Canvas canvas = new Canvas(mutableBitmap);
+                Log.d("dee","reached here3");
+                //If the text is bigger than the canvas , reduce the font size
+                if (textRect.width() >= (canvas.getWidth() - 4))     //the padding on either sides is considered as 4, so as to appropriately fit in the text
+                    paint.setTextSize(convertToPixels(getApplicationContext(), 4));        //Scaling needs to be used for different dpi's
+
+                //Calculate the positions
+                int xPos = (canvas.getWidth()) - 55;     //-2 is for regulating the x position offset
+
+                //"- ((paint.descent() + paint.ascent()) / 2)" is the distance from the baseline to the center.
+                int yPos = (int) ((canvas.getHeight()) - 10/*((paint.descent() + paint.ascent()) / 2)*/);
+
+                canvas.drawText("NUMERO", xPos, yPos, paint);
+                // int bitmapResId = this.getB.getIdentifier("image" + (i),"drawable", this.getPackageName());
+                //Log.d("dee", this.getResources().getIdentifier("image" + (i),  "drawable", this.getPackageName()) + "  " +" is the no");
+                Log.d("dee","image"+i);
                 //    Log.d("dee",this.getBitmapFromResources(getApplicationContext().getResources(),bitmapResId).toString());
                 //  Bitmap bitmap = getBitmapFromResources(this.getResources(), bitmapResId);
                 //Log.d("dee",R.drawable.class.getResource().l   +"  fields in drawable");
-                BitmapDrawable bitmap1 = this.writeTextOnDrawable(bitmapa,"NUMERO",getApplicationContext());
-                Log.d("positionhello",i+"hello");
-                Picture pic = this.fromBitmap(drawableToBitmap(bitmap1));
-                bitmapa.recycle();
+                //BitmapDrawable bitmap1 = this.writeTextOnDrawable(bitmapResId,"NUMERO",getApplicationContext());
+                Picture pic = this.fromBitmap(mutableBitmap);
+                //  Toast.makeText(getApplicationContext(),"Image +" + i,Toast.LENGTH_SHORT).show();
                 encoder.encodeNativeFrame(pic);
-                Log.d("problem","not6");
+                Log.d("dee","reached here4");
             }
             int bitmapResId = this.getResources().getIdentifier("six", "drawable", this.getPackageName());
             Bitmap bitmap = getBitmapFromResources(this.getResources(), bitmapResId);
             Log.d("positionhello","helloend");
             Picture pic = this.fromBitmap((bitmap));
-            encoder.encodeNativeFrame(pic);
-            bitmap.recycle();
             encoder.finish();
         } catch (IOException e) {
             e.printStackTrace();
@@ -245,47 +313,6 @@ public class MainActivity extends FragmentActivity{
         }
     }
 
-    //bitmap function to wirte text on the document
-    public BitmapDrawable writeTextOnDrawable(Bitmap bitmap, String text, Context mContext) {
-        try {
-            Bitmap mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-
-            Typeface tf = Typeface.create("Helvetica", Typeface.BOLD);
-
-            Paint paint = new Paint();
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.BLUE);
-            paint.setTypeface(tf);
-            paint.setTextAlign(Paint.Align.CENTER);
-            paint.setTextSize(convertToPixels(mContext, 11));
-
-            Rect textRect = new Rect();
-            paint.getTextBounds(text, 0, text.length(), textRect);
-
-            Canvas canvas = new Canvas(mutableBitmap);
-
-            //If the text is bigger than the canvas , reduce the font size
-            if (textRect.width() >= (canvas.getWidth() - 4))     //the padding on either sides is considered as 4, so as to appropriately fit in the text
-                paint.setTextSize(convertToPixels(mContext, 7));        //Scaling needs to be used for different dpi's
-
-            //Calculate the positions
-            int xPos = (canvas.getWidth()) - 100;     //-2 is for regulating the x position offset
-
-            //"- ((paint.descent() + paint.ascent()) / 2)" is the distance from the baseline to the center.
-            int yPos = (int) ((canvas.getHeight()) - 20/*((paint.descent() + paint.ascent()) / 2)*/);
-
-            canvas.drawText(text, xPos, yPos, paint);
-
-
-            return new BitmapDrawable(mContext.getResources(), mutableBitmap);
-        }catch (Exception e) {
-            e.printStackTrace();
-            Log.d("dee", "problem in the writeText on Drawable function");
-        }
-        return new BitmapDrawable(mContext.getResources(), bitmap1);
-    }
-
-
     public static int convertToPixels(Context context, int nDP)
     {
         final float conversionScale = context.getResources().getDisplayMetrics().density;
@@ -317,4 +344,15 @@ public class MainActivity extends FragmentActivity{
 
     }
 
+    @Override
+    public void onClick(View view) {
+            if(view.getId()==R.id.linearstart){
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+    }
+
+    public void successfulvideocreated(){
+        Toast.makeText(activity,"Video save successfully in gallery",Toast.LENGTH_LONG);
+    }
 }

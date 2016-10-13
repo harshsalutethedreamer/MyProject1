@@ -20,7 +20,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="119dp"
-            android:background="#FFD500"
+            android:background="@color/maintheme"
             >
 
             <LinearLayout
@@ -80,6 +80,7 @@
                                 android:id="@+id/favourite_button"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
+                                android:layout_marginRight="10dp"
                                 android:src="@drawable/ic_star_border_black_24dp"
                                 />
 

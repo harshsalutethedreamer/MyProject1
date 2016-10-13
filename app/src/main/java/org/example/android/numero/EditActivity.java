@@ -62,6 +62,9 @@ public class EditActivity extends FragmentActivity {
 
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
 
+        TextView addeditname=(TextView) findViewById(R.id.addcategoryname);
+        addeditname.setText("Edit Category");
+
         nname=(EditText) findViewById(R.id.categoryname);
 
         ndescription=(EditText) findViewById(R.id.description);

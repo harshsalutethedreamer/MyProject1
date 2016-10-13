@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="org.example.android.numero.MainActivity"
-    tools:showIn="@layout/activity_main">
+    android:background="#dfdfdf"
+    >
     <LinearLayout
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -16,77 +13,29 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#dfdfdf"
         android:id="@+id/linearlayout"
         android:orientation="vertical">
-
-        <include layout="@layout/toppart"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@color/md_grey_400"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:gravity="center">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="USER : "
-                android:textColor="@color/white"
-                android:textSize="16sp"/>
-            <TextView
-                android:id="@+id/nickname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:text="NUMERO"
-                android:textColor="@color/white"/>
-
-        </LinearLayout>
-            <ImageView
-                android:id="@+id/setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:src="@drawable/ic_settings_black_24dp"
-                />
-        </RelativeLayout>
         <EditText
             android:id="@+id/search"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/grey_box2"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="8dp"
-            android:textSize="12sp"
+            android:paddingTop="5dp"
+            android:paddingLeft="20dp"
+            android:paddingBottom="5dp"
+            android:textSize="14sp"
             android:hint="SEARCH HERE"
-            android:drawableRight="@android:drawable/ic_menu_search"
-            android:drawableEnd="@android:drawable/ic_menu_search"/>
+            android:inputType="text"
+            android:imeOptions="actionSearch"
+            />
         <view
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:id="@+id/recycler_view"
             class="android.support.v7.widget.RecyclerView"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            >
-            <ImageView
-                android:id="@+id/addcategory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/addcatbutton"
-                />
-        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

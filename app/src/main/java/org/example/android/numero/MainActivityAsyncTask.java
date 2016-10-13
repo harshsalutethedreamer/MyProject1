@@ -43,6 +43,7 @@ public class MainActivityAsyncTask extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        ((MainActivity) ncontext).successfulvideocreated();
     }
 
     @Override
@@ -58,23 +59,56 @@ public class MainActivityAsyncTask extends AsyncTask<Void,Void,Void> {
             NewSequenceEncoder encoder = new NewSequenceEncoder(file);
             File folder = new File(Environment.getExternalStorageDirectory() + "/numeros/" + category_name);
             File[] listFile = folder.listFiles();
+            String text="NUMERO";
             // only 5 frames in total
+            Log.d("problem1",String.valueOf(listFile.length));
             for (int i = 1; i <= listFile.length; i++) {
                 String FilePathStrings=listFile[i-1].getAbsolutePath();
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                bmOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
                 Bitmap bitmapa = BitmapFactory.decodeFile(FilePathStrings,bmOptions);
+                Bitmap mutableBitmap = bitmapa.copy(Bitmap.Config.ARGB_8888, true);
+                Typeface tf = Typeface.create("google lato", Typeface.BOLD);
+
+                Paint paint = new Paint();
+                paint.setStyle(Paint.Style.FILL);
+                paint.setColor(Color.BLUE);
+                paint.setTypeface(tf);
+                paint.setTextAlign(Paint.Align.CENTER);
+                paint.setTextSize(convertToPixels(ncontext.getApplicationContext(),6));
+
+                Rect textRect = new Rect();
+                paint.getTextBounds(text, 0, text.length(), textRect);
+                //            Log.d("dee","reached here2");
+                Canvas canvas = new Canvas(mutableBitmap);
+                Log.d("dee","reached here3");
+                //If the text is bigger than the canvas , reduce the font size
+                if (textRect.width() >= (canvas.getWidth() - 4))     //the padding on either sides is considered as 4, so as to appropriately fit in the text
+                    paint.setTextSize(convertToPixels(ncontext.getApplicationContext(), 4));        //Scaling needs to be used for different dpi's
+
+                //Calculate the positions
+                int xPos = (canvas.getWidth()) - 55;     //-2 is for regulating the x position offset
+
+                //"- ((paint.descent() + paint.ascent()) / 2)" is the distance from the baseline to the center.
+                int yPos = (int) ((canvas.getHeight()) - 10/*((paint.descent() + paint.ascent()) / 2)*/);
+
+                canvas.drawText("NUMERO", xPos, yPos, paint);
+                // int bitmapResId = this.getB.getIdentifier("image" + (i),"drawable", this.getPackageName());
+                //Log.d("dee", this.getResources().getIdentifier("image" + (i),  "drawable", this.getPackageName()) + "  " +" is the no");
+                Log.d("dee","image"+i);
                 //    Log.d("dee",this.getBitmapFromResources(getApplicationContext().getResources(),bitmapResId).toString());
                 //  Bitmap bitmap = getBitmapFromResources(this.getResources(), bitmapResId);
                 //Log.d("dee",R.drawable.class.getResource().l   +"  fields in drawable");
-                BitmapDrawable bitmap1 = this.writeTextOnDrawable(bitmapa,"NUMERO",ncontext.getApplicationContext());
-                Picture pic = this.fromBitmap(drawableToBitmap(bitmap1));
+                //BitmapDrawable bitmap1 = this.writeTextOnDrawable(bitmapResId,"NUMERO",getApplicationContext());
+                Picture pic = this.fromBitmap(mutableBitmap);
+                //  Toast.makeText(getApplicationContext(),"Image +" + i,Toast.LENGTH_SHORT).show();
                 encoder.encodeNativeFrame(pic);
+                Log.d("dee","reached here4");
             }
             int bitmapResId = ncontext.getResources().getIdentifier("six", "drawable", ncontext.getPackageName());
             Bitmap bitmap = getBitmapFromResources(ncontext.getResources(), bitmapResId);
+            Log.d("positionhello","helloend");
             Picture pic = this.fromBitmap((bitmap));
-            encoder.encodeNativeFrame(pic);
-
             encoder.finish();
         } catch (IOException e) {
             e.printStackTrace();
@@ -137,48 +171,6 @@ public class MainActivityAsyncTask extends AsyncTask<Void,Void,Void> {
             }
         }
     }
-
-    //bitmap function to wirte text on the document
-    public BitmapDrawable writeTextOnDrawable(Bitmap bitmap, String text, Context mContext) {
-        try {
-            Bitmap bm   = bitmap;
-            Bitmap mutableBitmap = bm.copy(Bitmap.Config.ARGB_8888, true);
-
-            Typeface tf = Typeface.create("Helvetica", Typeface.BOLD);
-
-            Paint paint = new Paint();
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.BLUE);
-            paint.setTypeface(tf);
-            paint.setTextAlign(Paint.Align.CENTER);
-            paint.setTextSize(convertToPixels(mContext, 11));
-
-            Rect textRect = new Rect();
-            paint.getTextBounds(text, 0, text.length(), textRect);
-
-            Canvas canvas = new Canvas(mutableBitmap);
-
-            //If the text is bigger than the canvas , reduce the font size
-            if (textRect.width() >= (canvas.getWidth() - 4))     //the padding on either sides is considered as 4, so as to appropriately fit in the text
-                paint.setTextSize(convertToPixels(mContext, 7));        //Scaling needs to be used for different dpi's
-
-            //Calculate the positions
-            int xPos = (canvas.getWidth()) - 100;     //-2 is for regulating the x position offset
-
-            //"- ((paint.descent() + paint.ascent()) / 2)" is the distance from the baseline to the center.
-            int yPos = (int) ((canvas.getHeight()) - 20/*((paint.descent() + paint.ascent()) / 2)*/);
-
-            canvas.drawText(text, xPos, yPos, paint);
-
-
-            return new BitmapDrawable(mContext.getResources(), bm);
-        }catch (Exception e) {
-            e.printStackTrace();
-            Log.d("dee", "problem in the writeText on Drawable function");
-        }
-        return new BitmapDrawable(mContext.getResources(), bitmap1);
-    }
-
 
     public static int convertToPixels(Context context, int nDP)
     {
