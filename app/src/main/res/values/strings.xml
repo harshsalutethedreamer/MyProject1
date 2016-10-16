@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NUMERO</string>
+    <string name="app_name">YOCOUNT</string>
     <string name="action_settings">Settings</string>
     <string name="add_category">ADD CATEGORY</string>
     <string name="selectdate">Select Date</string>
@@ -51,5 +51,10 @@
         <item>Camera</item>
         <item>Gallery</item>
     </string-array>
+
+    <string name="appname">yocount</string>
+
+    <string name="transition_name">transition:NAME</string>
+    <string name="transition_count">transition:COUNT</string>
 
 </resources>

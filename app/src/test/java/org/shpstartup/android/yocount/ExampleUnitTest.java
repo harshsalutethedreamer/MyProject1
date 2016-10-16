@@ -1,4 +1,4 @@
-package org.example.android.numero;
+package org.shpstartup.android.yocount;
 
 import org.junit.Test;
 
